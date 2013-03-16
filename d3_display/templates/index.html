@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-/>
+<html lang="en">
+<head>
+<title>d3 Display</title>
+<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+<link href="/static/lib/nv.d3.css" rel="stylesheet">
+<link href="/static/lib/jquery-ui.css" rel="stylesheet">
+<script type="text/javascript" src="/static/lib/jquery-latest.js"></script>
+<script type="text/javascript" src="/static/lib/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/lib/coffee-script.js"></script>
+<script type="text/javascript" src="/static/lib/d3.v2.js"></script>
+<script type="text/javascript" src="/static/lib/underscore-min.js"></script>
+<script type="text/javascript" src="/static/lib/mousetrap.min.js"></script>
+<script type="text/javascript" src="/static/lib/stomp.js"></script>
+<script type="text/javascript" src="/static/lib/sylvester.js"></script>
+<script type="text/javascript" src="/static/lib/glUtils.js"></script>
+<script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap/js/bootstrapx-clickover.js"></script>
+<script type="text/javascript" src="/static/lib/bootstrap-contextmenu.js"></script>
+<script type="text/javascript" src="/static/lib/nv.d3.js"></script>
+</head>
+<body>
+<div class="container">
+
+<section id="placement_server_example">
+  <div class="page-header">
+    <h1>d3 Display</h1>
+  </div>
+  <div class="row">
+      <div id="chart"><svg style='height:500px'></svg></div>
+  </div>
+</section>
+
+<script type="text/coffeescript">
+    @data = {{ data|tojson|safe }}
+    obj = @
+
+    nv.addGraph(() ->
+        chart = nv.models.lineChart()
+
+        if data.axis?
+            if data.axis.x?
+                if data.axis.x.label
+                    chart.xAxis.axisLabel(data.axis.x.label)
+                if data.axis.x.tick_format
+                    chart.xAxis.tickFormat(d3.format(data.axis.x.tick_format))
+
+            if data.axis.y?
+                if data.axis.y.label
+                    chart.yAxis.axisLabel(data.axis.y.label)
+                if data.axis.y.tick_format
+                    chart.yAxis.tickFormat(d3.format(data.axis.y.tick_format))
+
+        d3.select('#chart svg')
+            .datum(data.series)
+            .transition().duration(500)
+            .call(chart)
+
+        nv.utils.windowResize(() -> d3.select('#chart svg').call(chart))
+
+        obj.chart = chart
+        return chart
+    )
+</script>
+</body>
+</html>
